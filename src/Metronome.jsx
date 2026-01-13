@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const Metronome = () => {
   const [bpm, setBpm] = useState(120);
@@ -15,14 +15,29 @@ const Metronome = () => {
     beep: { name: 'Beep', frequency: 1500, duration: 30 }
   };
 
+  const togglePlay = useCallback(() => {
+    setIsPlaying(prev => !prev);
+  }, []);
+
   useEffect(() => {
     audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const handleKeyPress = (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    
     return () => {
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
+      window.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
+  }, [togglePlay]);
 
   const playSound = (isAccent = false) => {
     if (!audioContextRef.current) return;
@@ -69,9 +84,7 @@ const Metronome = () => {
     }
   }, [isPlaying, bpm, selectedSound]);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
+
 
   const handleBpmChange = (e) => {
     const newBpm = parseInt(e.target.value);
