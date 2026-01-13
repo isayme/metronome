@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const Metronome = () => {
   const [bpm, setBpm] = useState(120);
@@ -9,10 +9,10 @@ const Metronome = () => {
   const audioContextRef = useRef(null);
 
   const sounds = {
-    click: { name: 'Click', frequency: 1000, duration: 50 },
-    wood: { name: 'Wood', frequency: 800, duration: 100 },
-    low: { name: 'Low', frequency: 600, duration: 100 },
-    beep: { name: 'Beep', frequency: 1500, duration: 30 }
+    click: { name: 'Click', frequency: 1000 },
+    wood: { name: 'Wood', frequency: 800 },
+    low: { name: 'Low', frequency: 600 },
+    beep: { name: 'Beep', frequency: 1200 }
   };
 
   const togglePlay = useCallback(() => {
@@ -39,7 +39,7 @@ const Metronome = () => {
     };
   }, [togglePlay]);
 
-  const playSound = (isAccent = false) => {
+  const playSound = () => {
     if (!audioContextRef.current) return;
     
     const sound = sounds[selectedSound];
@@ -50,14 +50,15 @@ const Metronome = () => {
     gainNode.connect(audioContextRef.current.destination);
     
     // isAccent: 第一拍声音频率x1.5
-    oscillator.frequency.value = isAccent ? sound.frequency * 1.5 : sound.frequency;
+    // oscillator.frequency.value = isAccent ? sound.frequency * 1.5 : sound.frequency;
+    oscillator.frequency.value = sound.frequency;
     oscillator.type = 'sine';
     
     gainNode.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + sound.duration / 1000);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.1);
     
     oscillator.start(audioContextRef.current.currentTime);
-    oscillator.stop(audioContextRef.current.currentTime + sound.duration / 1000);
+    oscillator.stop(audioContextRef.current.currentTime + 0.1);
   };
 
   useEffect(() => {
@@ -66,7 +67,7 @@ const Metronome = () => {
       let beat = 0;
       
       intervalRef.current = setInterval(() => {
-        playSound(beat === 0);
+        playSound();
         setCurrentBeat(beat);
         beat = (beat + 1) % 4;
       }, interval);
