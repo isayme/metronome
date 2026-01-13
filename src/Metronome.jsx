@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Metronome = () => {
   const [bpm, setBpm] = useState(120);
@@ -11,8 +11,8 @@ const Metronome = () => {
   const sounds = {
     click: { name: 'Click', frequency: 1000, duration: 50 },
     wood: { name: 'Wood', frequency: 800, duration: 100 },
-    beep: { name: 'Beep', frequency: 1500, duration: 30 },
-    tick: { name: 'Tick', frequency: 2000, duration: 20 }
+    low: { name: 'Low', frequency: 600, duration: 100 },
+    beep: { name: 'Beep', frequency: 1500, duration: 30 }
   };
 
   useEffect(() => {
@@ -34,6 +34,7 @@ const Metronome = () => {
     oscillator.connect(gainNode);
     gainNode.connect(audioContextRef.current.destination);
     
+    // isAccent: 第一拍声音频率x1.5
     oscillator.frequency.value = isAccent ? sound.frequency * 1.5 : sound.frequency;
     oscillator.type = 'sine';
     
@@ -82,9 +83,9 @@ const Metronome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Ukulele Metronome</h1>
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Metronome</h1>
         
         <div className="text-center mb-8">
           <div className="text-6xl font-bold text-purple-600 mb-2">{bpm}</div>
@@ -108,7 +109,7 @@ const Metronome = () => {
 
         <div className="mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tempo (BPM)
+            BPM
           </label>
           <input
             type="range"
