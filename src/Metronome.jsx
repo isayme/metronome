@@ -92,6 +92,13 @@ const Metronome = () => {
     setBpm(newBpm);
   };
 
+  const handleQuickBpmChange = (delta) => {
+    setBpm(prevBpm => {
+      const newBpm = prevBpm + delta;
+      return Math.max(40, Math.min(200, newBpm));
+    });
+  };
+
   const handleSoundChange = (sound) => {
     setSelectedSound(sound);
   };
@@ -122,9 +129,6 @@ const Metronome = () => {
         </div>
 
         <div className="mb-8">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            BPM
-          </label>
           <input
             type="range"
             min="40"
@@ -136,6 +140,33 @@ const Metronome = () => {
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>40</span>
             <span>200</span>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-1 mt-4">
+            <button
+              onClick={() => handleQuickBpmChange(-10)}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-700 transition-all"
+            >
+              -10
+            </button>
+            <button
+              onClick={() => handleQuickBpmChange(-1)}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-700 transition-all"
+            >
+              -1
+            </button>
+            <button
+              onClick={() => handleQuickBpmChange(1)}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-700 transition-all"
+            >
+              +1
+            </button>
+            <button
+              onClick={() => handleQuickBpmChange(10)}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-700 transition-all"
+            >
+              +10
+            </button>
           </div>
         </div>
 
